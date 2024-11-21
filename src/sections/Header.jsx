@@ -2,18 +2,8 @@
 // 1. useState per gestire lo stato (apertura/chiusura del menu).
 // 2. LinkScroll per gestire i link con uno scorrimento fluido.
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link as LinkScroll } from "react-scroll";
-
-// Componente NavLink
-// Questo componente rappresenta un singolo link di navigazione.
-const NavLink = ({ title }) => (
-  // Il link utilizza il componente "LinkScroll" per abilitare lo scorrimento fluido.
-  // Viene applicato uno stile di base con una classe CSS e un effetto hover.
-  <LinkScroll className="base-bold text-p4 uppercase transition-colors duration-500 cursor-pointer hover:text-p1 max-lg:my-4 max-lg:h5">
-    {title}
-  </LinkScroll>
-);
 
 // Componente Header
 // Questo componente rappresenta l'intestazione principale del sito, includendo:
@@ -21,13 +11,50 @@ const NavLink = ({ title }) => (
 // - Un menu di navigazione
 // - Un pulsante per aprire/chiudere il menu su dispositivi mobili
 const Header = () => {
+  const [hasScrolled, sethasScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      sethasScrolled(window.scrollY > 32);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  // Componente NavLink
+  // Questo componente rappresenta un singolo link di navigazione.
+  const NavLink = ({ title }) => (
+    // Il link utilizza il componente "LinkScroll" per abilitare lo scorrimento fluido.
+    // Viene applicato uno stile di base con una classe CSS e un effetto hover.
+    <LinkScroll
+      onClick={() => setisOpen(false)}
+      to={title}
+      offset={-100}
+      spy
+      smooth
+      activeClass="nav-active"
+      className="base-bold text-p4 uppercase transition-colors duration-500 cursor-pointer hover:text-p1 max-lg:my-4 max-lg:h5"
+    >
+      {title}
+    </LinkScroll>
+  );
+
   // Stato "isOpen" per gestire l'apertura del menu mobile.
   // Valore iniziale: false (menu chiuso).
   const [isOpen, setisOpen] = useState(false);
 
   return (
     // Contenitore principale dell'intestazione
-    <header className="fixed top-0 left-0 z-50 w-full py-10">
+    <header
+      className={clsx(
+        "fixed top-0 left-0 z-50 w-full py-10 transition-all duration-500 max-lg:py-4",
+        hasScrolled && "py-2 bg-black-100 backdrop-blur-[8px]"
+      )}
+    >
       <div className="container flex h-14 items-center max-lg:px-5">
         {/* Logo visibile solo su dispositivi mobili */}
         <a className="lg:hidden flex-1 cursor-pointer z-2">
@@ -48,7 +75,7 @@ const Header = () => {
                 {/* Colonna di sinistra con due link: Features e Pricing */}
                 <li className="nav-li">
                   {/* Link per "Features" */}
-                  <NavLink title="Features" />
+                  <NavLink title="features" />
                   {/* Separatore decorativo (es. un punto) */}
                   <div className="dot" />
                   {/* Link per "Pricing" */}
@@ -59,7 +86,7 @@ const Header = () => {
                 <li className="nav-logo">
                   <LinkScroll
                     to="hero"
-                    offset={-100}
+                    offset={-250}
                     spy
                     smooth
                     className={clsx(
