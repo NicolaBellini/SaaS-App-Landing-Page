@@ -3,6 +3,7 @@ import { Element } from "react-scroll";
 import clsx from "clsx";
 import { plans } from "../constants";
 import CountUp from "react-countup";
+import Button from "../components/Button";
 
 const Pricing = () => {
   const [monthly, setmonthly] = useState(false);
@@ -69,7 +70,7 @@ const Pricing = () => {
                 <div
                   className={clsx(
                     "absolute left-0 right-0 z-2 flex items-center justify-center",
-                    index === 1 ? "-top-6" : "-top6 xl:-top-11"
+                    index === 1 ? "-top-6" : "-top-6 xl:-top-11"
                   )}
                 >
                   <img
@@ -135,9 +136,20 @@ const Pricing = () => {
                         alt="check"
                         className="size-10 object-contain"
                       />
+                      <p className="flex-1 ">{feature}</p>
                     </li>
                   ))}
                 </ul>
+
+                <div className="mt-10 flex w-full justify-center ">
+                  <Button icon={plan.icon}>Get started</Button>
+                </div>
+
+                {index === 1 && (
+                  <p className="small-compact mt-9 text-center text-p3 before:content-['-'] after:mx-2.5 after:content-['-'] before:mx-2.5">
+                    Limited time offer
+                  </p>
+                )}
               </div>
             ))}
           </div>
